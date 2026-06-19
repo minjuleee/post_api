@@ -25,6 +25,18 @@ class PostCreate(BaseModel) :
       }
     }
   }
+  
+
+class PostItem(BaseModel) :
+  """목록 조회 응답 - 게시글 전체 조회용"""
+  id:         int
+  title:      str
+  author:     str
+  view_count: int
+  created_at: datetime
+  updated_at: datetime
+  model_config = {"from_attributes": True}  # 위 속성(attributes)들을 json 구조로 출력함
+  
 
 
 class PostDetail(BaseModel):
