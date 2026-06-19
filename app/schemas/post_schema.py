@@ -38,7 +38,6 @@ class PostItem(BaseModel) :
   model_config = {"from_attributes": True}  # 위 속성(attributes)들을 json 구조로 출력함
   
 
-
 class PostDetail(BaseModel):
   """상세 조회 응답 (본문 포함)"""
   id:         int
@@ -49,3 +48,9 @@ class PostDetail(BaseModel):
   created_at: datetime
   updated_at: datetime
   model_config = {"from_attributes": True}  # 위 속성(attributes)들을 json 구조로 출력함
+
+
+class PostListResponse(BaseModel) :
+  """PostItem의 리스트 형태 (게시글 전체 조회시 실제 반환되는 json 형태)"""
+  posts : List[PostItem]
+  
