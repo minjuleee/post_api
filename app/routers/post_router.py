@@ -26,6 +26,7 @@ def get_post_service(db:Session = Depends(get_db)) -> PostService :
   """
   return PostService(db)    # PostService (서비스 단의 생성자 함수 호출)
 
+
 @router.post("", response_model=PostDetail, status_code=201, summary="게시글 등록")
 def create_post(
   data:PostCreate,
@@ -33,4 +34,12 @@ def create_post(
 ) : 
   postDetail = service.create_post(data)   # 서비스단의 create_post() 호출
   return postDetail
+
+
+@router.get("/{id}", response_model=PostDetail, summary="게시판")
+def get_post(
+  id:int=Path(..., ge=1),
+  service:PostService=Depends(get_post_service)
+) :
+  service.get_post_detail(id)
 
