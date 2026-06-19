@@ -51,3 +51,9 @@ class PostRepository :
     self.db.refresh(post)
     return post
     
+  
+  def get_post_list(self) -> List[Post]:
+    """
+    게시글 전체 목록 조회
+    """
+    return self.db.query(Post).all()
