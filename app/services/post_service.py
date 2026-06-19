@@ -51,7 +51,7 @@ class PostService:
     """
     print(f"{id}번 글을 조회하자")
     post = self._get_or_404(id)                   # id번 글 조회
-    post = self.repo.increament_view_count(post)  # 조회수 증가
+    post = self.repo.increment_view_count(post)  # 조회수 증가
     
     return PostDetail.model_validate(post)
     
