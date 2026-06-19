@@ -41,5 +41,5 @@ def get_post(
   id:int=Path(..., ge=1),
   service:PostService=Depends(get_post_service)
 ) :
-  service.get_post_detail(id)
+  return service.get_post_detail(id)
 
