@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 
 from app.database import get_db
-from app.schemas.post_schema import PostCreate, PostDetail, PostItem
+from app.schemas.post_schema import PostCreate, PostDetail, PostItem, PostListResponse
 from app.services.post_service import PostService
 
 router = APIRouter(prefix="/posts", tags=["게시판"])
@@ -44,7 +44,7 @@ def get_post(
   return service.get_post_detail(id)
 
 
-@router.get("/", response_model=PostItem, summary="게시판 전체 조회")
+@router.get("/", response_model=PostListResponse, summary="게시판 전체 조회")
 def get_list(
   page:int=Query(1, ge=1, description="페이지번호"),
   per_page:int=Query(10, ge=10, le=100, description="페이지당 항목 수"),
