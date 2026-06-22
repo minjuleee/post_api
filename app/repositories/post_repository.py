@@ -57,3 +57,11 @@ class PostRepository :
     게시글 전체 목록 조회
     """
     return self.db.query(Post).all()
+  
+  
+  def get_post_count(self) -> int :
+    """
+    게시글의 전체 row수를 반환
+    """
+    count = self.db.query(func.count(Post.id))
+    return count.scalar()
