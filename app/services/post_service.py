@@ -10,13 +10,30 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
-from app.schemas.post_schema import PostCreate, PostDetail, PostListResponse, PostItem
+from app.schemas.post_schema import PostCreate, PostDetail, PostListResponse, PostItem, PagingInfo
 from app.repositories.post_repository import PostRepository
 
 class PostService:
   def __init__(self, db:Session):
     self.db = db
     self.repo = PostRepository(db)  # repo 멤버변수에 PostRepository 객체 주입
+  
+  
+  def _make_page_info(self, count:int, page:int, per_page:int) -> PagingInfo:
+    """
+    페이징 정보를 계산합니다.
+    이 계산 로직은 비즈니스 로직이므로 Service에 위치합니다.
+    (Repository는 offset/limit만 받아서 실행하고 계산하지 않습니다)
+    """
+    total_pages = max(1, math.ceil(count / per_page))
+    return PagingInfo(
+      total=count,
+      total_pages=total_pages,
+      page=page,
+      per_page=per_page,
+      has_prev=page > 1,
+      has_next=page < total_pages,
+    )
     
     
   def _get_or_404(self, id:int):
@@ -77,6 +94,7 @@ class PostService:
     # => ORM에서 반환되는 기본값.
     # 그래서 우리는 PostItem(한건의 게시글 json) schema를 감싼 PostListResponse 
     # 스키마를 만들어 반환하는 구조를 선택
-    return PostListResponse(posts = [PostItem.model_validate(p) for p in posts])
-
-
+    return PostListResponse(
+      posts = [PostItem.model_validate(p) for p in posts],
+      page_info=self._make_page_info(count, page, per_page)
+    )
