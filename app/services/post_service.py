@@ -73,12 +73,15 @@ class PostService:
     return PostDetail.model_validate(post)
     
   
-  def get_list(self, page:int, per_page:int) -> PostListResponse :
+  def get_list(self, page:int, per_page:int, 
+      search:Optional[str]=None, author:Optional[str]=None,
+      order_by:str="latest"
+    ) -> PostListResponse :
     """
     게시글 전체 조회하는 서비스 함수
     """
     # 1. 전체 데이터 수 조회(페이징 계산용)
-    count = self.repo.get_post_count()
+    count = self.repo.get_post_count(search, author)
     
     # 2. offset 계산
     # (현재페이지번호 - 1) * 페이지당 보여줄 글의 갯수
@@ -88,6 +91,8 @@ class PostService:
     posts = self.repo.get_post_list(
       offset=offset, 
       limit=per_page,
+      search=search, author=author,
+      order_by=order_by
     ) # List[Post] 타입 반환
     
     # Repository단에서 반환되는 List[Post]는 Post객체를 List[]에 감싼 타입이다. (json이 아님) 
