@@ -94,3 +94,24 @@ class PostRepository :
       query = query.filter(Post.author == author)
       
     return query.scalar()
+  
+  
+  def update(self, post:Post, changes:dict) -> Post :
+    """ 
+    변경할 필드 딕셔너리를 받아 게시글을 수정 
+    post : 원래 글
+    changes : 변경할 내용들
+    """
+    for field, value in changes.itmes() :
+      setattr(post, field, value)   # post객체의 속성을 field(key), value(value)로 세팅
+    
+    post.updated_at = datetime.now()
+    self.db.commit()
+    self.db.refresh(post)
+    return post
+    
+  
+  def delete(self, post:Post) -> None:
+    """게시글을 삭제합니다."""
+    self.db.delete(post)
+    self.db.commit()

@@ -10,7 +10,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
-from app.schemas.post_schema import PostCreate, PostDetail, PostListResponse, PostItem, PagingInfo
+from app.schemas.post_schema import PostCreate, PostDetail, PostListResponse, PostItem, PagingInfo, PostUpdate
 from app.repositories.post_repository import PostRepository
 
 class PostService:
@@ -103,3 +103,17 @@ class PostService:
       posts = [PostItem.model_validate(p) for p in posts],
       page_info=self._make_page_info(count, page, per_page)
     )
+  
+  
+  def update_post(self, id:int, data:PostUpdate) -> PostDetail :
+    """ 게시글 수정 """
+    post = self._get_or_404(id)
+    changes = data.model_dump(exclude_none=True)  # None필드 제외
+    post = self.repo.update(post, changes=changes)
+    return PostDetail.model_validate(post)
+    
+
+  def delete_post(self, id:int) -> None :
+    """ 게시글 삭제 """
+    post = self._get_or_404(id)
+    self.repo.delete(post)
