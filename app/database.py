@@ -24,6 +24,7 @@ engine = create_engine(
   DATABASE_URL,
   pool_size=5,          # 미리 만들어 놓은 연결 객체. (필요하면 가져다 쓰고, 다 쓴 후에 반환한다)
   pool_pre_ping=True,   # idle모드 연결 자동 복구(mariadb, mysql db 필수)
+  echo=True,
 )
 
 sessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)  # 데이터베이스에 연결 객체
