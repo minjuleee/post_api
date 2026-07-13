@@ -31,16 +31,17 @@ def get_post_service(db:Session = Depends(get_db)) -> PostService :
   return PostService(db)    # PostService (서비스 단의 생성자 함수 호출)
 
 
-@router.post("", response_model=PostDetail, status_code=201, summary="게시글 등록")
+@router.post("", response_model=PostDetail, status_code=201, summary="게시글 등록", 
+             operation_id="create_post")
 def create_post(
   data:PostCreate,
-  service:PostService = Depends(get_post_service)
+  service:PostService = Depends(get_post_service),
 ) : 
   postDetail = service.create_post(data)   # 서비스단의 create_post() 호출
   return postDetail
 
 
-@router.get("/{id}", response_model=PostDetail, summary="게시판")
+@router.get("/{id}", response_model=PostDetail, summary="게시판", operation_id="list_posts")
 def get_post(
   id:int=Path(..., ge=1),
   service:PostService=Depends(get_post_service)
@@ -60,7 +61,7 @@ def get_list(
   return service.get_list(page, per_page, search, author, order_by)
 
 
-@router.put("/{id}", response_model=PostDetail, summary="게시글 수정")
+@router.put("/{id}", response_model=PostDetail, summary="게시글 수정", operation_id="update_post")
 def update_post(
   id:int = Path(..., ge=1),
   data:PostUpdate = ...,
@@ -69,7 +70,7 @@ def update_post(
   return service.update_post(id, data=data)
 
 
-@router.delete("/{id}", status_code=204, summary="게시글 삭제")
+@router.delete("/{id}", status_code=204, summary="게시글 삭제", operation_id="delete_post")
 def delete_post(
   id: int = Path(..., ge=1),  # 삭제할 게시글 번호
   service: PostService = Depends(get_post_service),
